@@ -1,0 +1,31 @@
+{
+  "name": "pixel-pandemonium",
+  "version": "0.0.1",
+  "description": "Pixel Pandemonium is Nate Howard's JavasScript party game with pixels",
+  "main": "app.js",
+  "scripts": {
+    "start": "node server/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://www.github.com/optimuspi/PixelPandemonium"
+  },
+  "keywords": [
+    "pixel",
+    "art",
+    "online",
+    "party",
+    "game",
+    "html5",
+    "javascript"
+  ],
+  "author": "Nate Howard",
+  "license": "ISC",
+  "homepage": "https://www.github.com/optimuspi/PixelPandemonium#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "http": "^0.0.1-security",
+    "path": "^0.12.7",
+    "socket.io": "^4.5.0"
+  }
+}

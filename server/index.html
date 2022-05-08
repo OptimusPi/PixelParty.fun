@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN"
+    "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">
+<html>
+	<head>
+		<title>Pixel Party</title>
+
+		<!-- Styles -->
+		<link rel="stylesheet" href="style.css">				
+		<link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+
+		<!-- Javascript Libraries -->
+		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.js"></script>
+		<script type="text/javascript" src="https://pixijs.download/v4.5.4/pixi.js"></script>  
+		<script type="text/javascript" src="https://github.com/pixijs/pixi-sound/releases/download/v2.0.0/pixi-sound.js"></script>  
+	</head>
+	
+	<body>
+		<h1>Pixel Party</h1>
+		<br>
+		<div id="container">
+			<div id="contentContainer">
+				<div id="canvas">
+					<!-- Pixel Party game canvas gets inserted inside #canvas -->
+				</div>
+			</div>
+			<form id="chat">
+				<textarea resize id="chat-feed">Pixel Party Fun</textarea>
+				<input id="chat-input" type='text' placeholder="(Send a chat message!)" autocomplete="off"/>
+				<button id="chat-submit">Send Chat</button>
+			</form>
+		</div>
+	</body>
+
+	<!-- JavaScript game code for Pixel Party. -->
+	<script type="text/javascript" src="scripts/keyboard.js"></script>
+	<script type="text/javascript" src="scripts/player.js"></script>
+	<script type="text/javascript" src="scripts/network.js"></script>
+	<script type="text/javascript" src="scripts/game.js"></script>
+	<script type="text/javascript" src="scripts/graphics.js"></script>
+	<script type="text/javascript" src="scripts/chat.js"></script>
+
+</html>

@@ -1,2 +1,2 @@
-# PixelParty.fun
-Pixel Party web game
+# PixelPandemonium
+Pixel Pandemonium Party Game
