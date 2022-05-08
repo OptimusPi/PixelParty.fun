@@ -123,36 +123,32 @@ sendGameChat = function(message) {
   }
 }
 
+function broadcastJoinAll(newPlayerConnectionI)
+{
+  // Tell everyone about the new player, and tell the new player about everyone.
+  for (i = 0; i < connections.length; i++){
+    // Broadcast the new player to each existing player.
+    connections[i].socket.emit('join', connections[newPlayerConnectionI].player);
+  }
+}
+
 function broadcastPlayerJoin(id)
 {
+  //get the index of the new player connection
+  var newPlayerConnectionI = connections.length-1;
   var playerInfo = new Object();
   var i = 0;
+
+
+  // Tell everyone about the new player, and tell the new player about everyone.
   for (i = 0; i < connections.length; i++){
+    // Find the new player's connection id
     if (connections[i].id === id) {
-      playerInfo.id = id;
-      playerInfo.name = connections[i].player.name;
-      playerInfo.x = connections[i].player.x;
-      playerInfo.y = connections[i].player.y;
-
-      //Tell this player about all players
-      //tell all clients character has moved 
-      //TODO - make a function to send to all clients
-      for (i2 = 0; i2 < connections.length; i2++){
-
-        //TODO just do a send function instead of checking for socket null
-        if (connections[i2].socket !== null && connections[i2].id != id) {
-          connections[i2].socket.emit('join', playerInfo);
-        }
-
-        //Send this old player's info to new player.
-        var existingPlayerInfo = new Object();
-        existingPlayerInfo.id = connections[i2].id;
-        existingPlayerInfo.name = connections[i2].player.name;
-        existingPlayerInfo.x = connections[i2].player.x;
-        existingPlayerInfo.y = connections[i2].player.y;
-        
-        connections[i].socket.emit('join', existingPlayerInfo);
-      }
+      // Broadcast the new player to all existing players.
+      broadcastJoinAll(newPlayerConnectionI);
+    } else {
+      // Broadcast each existing player to the new connection.
+      connections[newPlayerConnectionI].socket.emit('join', connections[i].player);
     }
   }
 }

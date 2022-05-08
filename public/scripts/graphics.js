@@ -26,8 +26,8 @@ const graphics = {
 
 		// create new sprite TOO make it from the image textures loaded in
 		var playerSprite = new PIXI.Sprite(this.heart.texture);
-		playerSprite.x = 0;
-		playerSprite.y = 0;
+		playerSprite.x = playerInfo.x * 8;
+		playerSprite.y = playerInfo.y * 8;
 		
 		//add sprite to player
 		player.sprite = playerSprite;
@@ -73,12 +73,14 @@ const graphics = {
 		}
 		PIXI.utils.sayHello(type);
 
+		console.log("scale mode: ", PIXI.settings);
+		PIXI.settings.ROUND_PIXELS = true;
+		PIXI.settings.SCALE_MODE = 
+
 		this.app = new PIXI.Application(this.screenWidth, this.screenHeight, {backgroundColor : this.backgroundColor});
-		//app.stage.scale.set(2)
-
-		console.log(document);
-		console.log(document.body);
-
+		graphics.app.renderer.view.style.width = '512px';
+		graphics.app.renderer.view.style.height = '512px';
+		
 		document.getElementById('canvas').appendChild(this.app.view);
 
 		PIXI.loader
@@ -97,16 +99,12 @@ const graphics = {
 			.load(function (){
 				//map layers
 				graphics.heart = new PIXI.Sprite(PIXI.loader.resources.heart.texture);
-
+				
 				graphics.init();
 			});
 	},
 
 	init: function() {
-		//Auto resize window
-		layout.addListeners();
-		layout.resizeCanvas();
-
 		//Start the game!
 		//TODO add networking init to game.init
 		game.init();
@@ -117,39 +115,16 @@ const graphics = {
 var layout = {    
    ratio: graphics.screenWidth/graphics.screenHeight,
 			   
-   resizeCanvas: function(){
-	//    var content = $('#canvas');
-	//    var w = content.width() - 200; //200 is minimum width for chat window
-	//    var h = content.height();
-	   
-	//    if (w / h >= layout.ratio) {
-	// 	   w = h * layout.ratio;
-	// 	   h = h;
-	//    } else {
-	// 	   w = w;
-	// 	   h = w / layout.ratio;
-	//    }
-	   
-	//    console.log("resize to w:" + w + " h: " + h);
-	//    graphics.app.renderer.view.style.width = w + 'px';
-	//    graphics.app.renderer.view.style.height = h + 'px';
-
-	//    var newChatWidth = $('#container').width() - w;
-	//    document.getElementById("chat").style.width = newChatWidth + "px";
-
-	//    console.log("chat width is now: " + newChatWidth);
-   },
-
    addListeners: function(){
-	   //Scale game to fit perfectly as the user resies their browser window
-	   $(window).resize(function(){
-		   layout.resizeCanvas();
-	   });
+	//    //Scale game to fit perfectly as the user resies their browser window
+	//    $(window).resize(function(){
+	// 	   layout.resizeCanvas();
+	//    });
 	   
-	   //Resize when a mobile devices switches between portrait and landscape orientation
-	   $(window).on( "orientationchange", function(){
-		   layout.resizeCanvas();
-	   });
+	//    //Resize when a mobile devices switches between portrait and landscape orientation
+	//    $(window).on( "orientationchange", function(){
+	// 	   layout.resizeCanvas();
+	//    });
    }
 };
 
