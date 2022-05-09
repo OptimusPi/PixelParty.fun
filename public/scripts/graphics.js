@@ -53,19 +53,6 @@ const graphics = {
 		}
 	},
 
-	runOverworld: function(){
-		//TODO send join packet on runOverworld
-
-		this.app.stage.addChild(this.mapLayerGround);
-		this.app.stage.addChild(this.mapLayerFringe);
-
-		this.mapLayerGround.on('pointerdown', function(e) {
-			alert("click!!");
-		});
-
-		this.addGUI();
-	},
-
 	start: function(){
 		var type = "WebGL";
 		if(!PIXI.utils.isWebGLSupported()){
@@ -73,15 +60,14 @@ const graphics = {
 		}
 		PIXI.utils.sayHello(type);
 
-		console.log("scale mode: ", PIXI.settings);
 		PIXI.settings.ROUND_PIXELS = true;
-		PIXI.settings.SCALE_MODE = 
 
-		this.app = new PIXI.Application(this.screenWidth, this.screenHeight, {backgroundColor : this.backgroundColor});
+		this.app = new PIXI.Application(this.screenWidth, this.screenHeight, {backgroundColor : this.backgroundColor, resizeTo: window});
 		graphics.app.renderer.view.style.width = '512px';
 		graphics.app.renderer.view.style.height = '512px';
-		
-		document.getElementById('canvas').appendChild(this.app.view);
+
+		var canvas = document.getElementById('canvas');
+		canvas.appendChild(this.app.view);
 
 		PIXI.loader
 			.add({name: 'apple', url: 'images/apple.png'})
@@ -99,7 +85,6 @@ const graphics = {
 			.load(function (){
 				//map layers
 				graphics.heart = new PIXI.Sprite(PIXI.loader.resources.heart.texture);
-				
 				graphics.init();
 			});
 	},
@@ -108,7 +93,6 @@ const graphics = {
 		//Start the game!
 		//TODO add networking init to game.init
 		game.init();
-		game.runOverworld();
 	}
 };
 

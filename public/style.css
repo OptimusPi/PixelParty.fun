@@ -28,10 +28,9 @@ input[type="text" i] {
 }
 
 #chat {
-	height: 100%;
+	height: 512px;
 }
-#container {
-	position: fixed;
+.container {
 	top: 0;
 	left: 25%; 
 	right: 0;
@@ -39,7 +38,7 @@ input[type="text" i] {
     justify-content: center;
 	background-color:burlywood;
 	width: 800px;
-	height: 100%;
+	height: 512px;
 	display: flex;
 }
 
@@ -62,9 +61,9 @@ input[type="text" i] {
 #chat {
 	display: flex;
 	flex-direction: column;
-	align-items: stretch;
 	width: 100%;
 	height: 100%;
+	align-items: stretch;
 	background-color:rgb(16, 63, 13);
 }
 
@@ -81,15 +80,15 @@ input[type="text" i] {
 	flex: 0 1 32px;
     font-family: monospace;
     font-style: normal;
-    font-size: x-large;
+    font-size: medium;
 }
 
 #chat-submit {
 	width: 100%;
-	flex: 0 1 60px;
+	flex: 0 1 32px;
 	left: 0;
     bottom: 0;
     font-family: monospace;
     font-style: normal;
-    font-size: x-large;
+    font-size: large;
 }
