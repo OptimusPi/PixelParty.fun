@@ -86,16 +86,16 @@ function movePlayer(id, direction)
   var i = 0;
   for (i = 0; i < connections.length; i++){
     if (connections[i].id === id) {
-      if (direction === 'left'){
+      if (direction === 'left' && connections[i].player.x > 0){
         connections[i].player.x --;
       }
-      if (direction === 'right'){
+      if (direction === 'right' && connections[i].player.x < 15){
         connections[i].player.x ++;
       }
-      if (direction === 'up'){
+      if (direction === 'up' && connections[i].player.y > 0){
         connections[i].player.y --;
       }
-      if (direction === 'down'){
+      if (direction === 'down' && connections[i].player.y < 15){
         connections[i].player.y ++;
       }
       playerInfo.id = id;
@@ -171,7 +171,7 @@ io.on('connection', function(socket){
   });
 
   socket.on('move', function(direction){
-    console.log('ID #' + id + ' moved their pixeol.');
+    console.log('ID #' + id + ' moved their pixel.');
 
     //TODO - check collision detection first
     movePlayer(id, direction);

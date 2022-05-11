@@ -4,6 +4,7 @@ const graphics = {
 	screenHeight: 128,
 	app: {},
 	players: [],
+	mapTiles: [],
 	heart: null,
 
 	removePlayer: function(id) {
@@ -19,13 +20,28 @@ const graphics = {
 		}
 	},
 
-	addPlayer: function(playerInfo) {
+	addMapTiles: function() {
+		//create player base, then add a sprite to it.
+		for (let x = 0; x < 16; x++){
+			for (let y = 0; y < 16; y++){
+				let mapTile = new PIXI.Rectangle(x, y, 8, 8);
+				//mapTile.beginFill(0xff0000);
+				//mapTile.drawRect(x, y, 8, 8);
+				// /this.mapTiles[x][y] = mapTile;
 
+				this.app.stage.addChild(mapTile);
+			}
+		}
+		
+	},
+
+	addPlayer: function(playerInfo) {
 		//create player base, then add a sprite to it.
 		var player = new Player(playerInfo.id, playerInfo.x, playerInfo.y);
 
 		// create new sprite TOO make it from the image textures loaded in
 		var playerSprite = new PIXI.Sprite(this.heart.texture);
+		
 		playerSprite.x = playerInfo.x * 8;
 		playerSprite.y = playerInfo.y * 8;
 		
@@ -49,20 +65,24 @@ const graphics = {
 				//move the character on screen
 				this.players[i].sprite.x = x * 8;
 				this.players[i].sprite.y = y * 8;
+				this.ensureBounds()
 			}
 		}
 	},
 
 	start: function(){
-		var type = "WebGL";
+		let type = "WebGL";
 		if(!PIXI.utils.isWebGLSupported()){
 			type = "canvas";
 		}
 		PIXI.utils.sayHello(type);
 
+		PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 		PIXI.settings.ROUND_PIXELS = true;
+		PIXI.settings.RENDER_OPTIONS.antialias = false;
+		PIXI.settings.RESOLUTION = 8;
 
-		this.app = new PIXI.Application(this.screenWidth, this.screenHeight, {backgroundColor : this.backgroundColor, resizeTo: window});
+		this.app = new PIXI.Application(this.screenWidth, this.screenHeight, {backgroundColor : 0xFFFFFF, resizeTo: window});
 		graphics.app.renderer.view.style.width = '512px';
 		graphics.app.renderer.view.style.height = '512px';
 
@@ -92,6 +112,7 @@ const graphics = {
 	init: function() {
 		//Start the game!
 		//TODO add networking init to game.init
+		this.addMapTiles();
 		game.init();
 	}
 };

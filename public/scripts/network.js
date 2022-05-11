@@ -33,6 +33,15 @@ var network =  {
 			graphics.movePlayer(characterInfo.id, characterInfo.x, characterInfo.y);
 		});
 
+		// map action event
+		this.socket.on('map', function(mapEvent){
+			
+			game.flipTile(mapEvent.x, mapEvent.y);
+
+			//Redraw graphics
+			graphics.movePlayer(characterInfo.id, characterInfo.x, characterInfo.y);
+		});
+
 		// chat event
 		this.socket.on('chat', function(message){
 			var chatMessage = '<' + message.username + '>' + ' ' + message.body; 
