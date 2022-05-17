@@ -35,11 +35,8 @@ var network =  {
 
 		// map action event
 		this.socket.on('map', function(mapEvent){
-			
-			game.flipTile(mapEvent.x, mapEvent.y);
-
-			//Redraw graphics
-			graphics.movePlayer(characterInfo.id, characterInfo.x, characterInfo.y);
+			game.flipTile(mapEvent.x, mapEvent.y, mapEvent.visible);
+			graphics.flipTile(mapEvent.x, mapEvent.y, mapEvent.visible);
 		});
 
 		// chat event

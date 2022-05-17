@@ -6,6 +6,7 @@ var game = {
   up: keyboard(38),
   right: keyboard(39),
   down: keyboard(40),
+  mapTiles: [],
 
   //keyboard spacebar key
   spacebar: keyboard(32),
@@ -42,6 +43,18 @@ var game = {
   actionPlayerPlace: function(){
     network.emit('action', 'place');
   },
+  addMapTiles: function(width, height) {
+		//create player base, then add a sprite to it.
+		for (let x = 0; x < width; x++){
+			this.mapTiles[x] = [];
+			for (let y = 0; y < height; y++){
+				this.mapTiles[x][y] = {visible: false};
+			}
+		}
+	},
+  flipTile(x, y, visible) {
+    this.mapTiles[x][y].visible = visible;
+  },
   init: function(){
     //Left arrow key press method
     this.left.press = function() {
@@ -73,6 +86,7 @@ var game = {
     //Spacebar key press method
     this.spacebar.press = function() {
         //send move down action
+        console.log("action(place)");
         game.actionPlayerPlace();
     };
 
@@ -87,6 +101,9 @@ var game = {
         url: 'sounds/menu.ogg',
         loop: true
     });
+
+    // Add blank map state
+    this.addMapTiles(16, 16);
 
     //Connect to game server
     network.init();

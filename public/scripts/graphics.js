@@ -23,18 +23,21 @@ const graphics = {
 	addMapTiles: function() {
 		//create player base, then add a sprite to it.
 		for (let x = 0; x < 16; x++){
+			this.mapTiles[x] = [];
 			for (let y = 0; y < 16; y++){
-				let mapTile = new PIXI.Rectangle(x, y, 8, 8);
-				//mapTile.beginFill(0xff0000);
-				//mapTile.drawRect(x, y, 8, 8);
-				// /this.mapTiles[x][y] = mapTile;
+				let mapTile = new PIXI.Graphics();
+				mapTile.beginFill(0x000000);
+				mapTile.drawRect(x*8, y*8, 8, 8);
+				this.mapTiles[x][y] = mapTile;
 
 				this.app.stage.addChild(mapTile);
+				this.mapTiles[x][y].visible = false;
 			}
 		}
-		
 	},
-
+	flipTile(x, y, visible) {
+		this.mapTiles[x][y].visible = visible;
+	},
 	addPlayer: function(playerInfo) {
 		//create player base, then add a sprite to it.
 		var player = new Player(playerInfo.id, playerInfo.x, playerInfo.y);
@@ -65,7 +68,6 @@ const graphics = {
 				//move the character on screen
 				this.players[i].sprite.x = x * 8;
 				this.players[i].sprite.y = y * 8;
-				this.ensureBounds()
 			}
 		}
 	},

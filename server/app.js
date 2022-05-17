@@ -8,6 +8,7 @@ var path = require('path');
 // Models
 const Player = require('./player.js');
 const Connection = require('./connection.js');
+const MapState = require('./MapState.js');
 
 // The code in /public is independent from /server
 // Use Express to serve everything in the public folder as regular HTML/JavaScript
@@ -39,6 +40,8 @@ function GetConnectionID(){
   connectionID++;
   return connectionID;
 }
+
+var mapTiles = new MapState(16, 16);
 
 function removeConnection(id){
  
@@ -76,6 +79,30 @@ function changeUsername(id, username)
   for (i = 0; i < connections.length; i++){
     if (connections[i].id === id) {
       connections[i].player.name = username;
+    }
+  }
+}
+
+function actionPlayer(player, action)
+{
+  if (action === 'place') {
+
+    let x = player.x;
+    let y = player.y;
+    mapTiles.flip(x, y);
+    let visible = mapTiles.get(x, y).visible;
+
+    console.log(">>> place " + x + "," + y);
+    console.log(">>> visible? " + visible);
+
+    for (let i = 0; i < connections.length; i++){
+      if (connections[i].socket !== null) {
+        connections[i].socket.emit('map', {
+          x,
+          y,
+          visible
+        });
+      }
     }
   }
 }
@@ -175,6 +202,12 @@ io.on('connection', function(socket){
 
     //TODO - check collision detection first
     movePlayer(id, direction);
+  });
+
+  socket.on('action', function(action){
+    console.log('ID #' + id + ' action: ' + action);
+    console.log("player: ", player);
+    actionPlayer(player, action);
   });
 
   socket.on('username', function(username){
