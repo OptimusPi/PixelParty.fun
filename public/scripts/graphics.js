@@ -107,6 +107,9 @@ const graphics = {
 			.load(function (){
 				//map layers
 				graphics.heart = new PIXI.Sprite(PIXI.loader.resources.heart.texture);
+				
+			})
+			.onComplete.add((loader, res) => {
 				graphics.init();
 			});
 	},
@@ -115,7 +118,40 @@ const graphics = {
 		//Start the game!
 		//TODO add networking init to game.init
 		this.addMapTiles();
-		game.init();
+
+
+		// Menu //
+		//
+		// Choose nickname
+		let input = new PIXI.TextInput({
+			input: {
+				fontStyle: 'normal',
+				fontFamily: 'monospace',
+				textAlign: 'center',
+				fontSize: '8px',
+				width: '96px',
+				height: '16px',
+				color: '#26272E',
+			},
+			box: {
+				default: {fill: 0xE8E9F3, rounded: 0, stroke: {color: 0xCBCEE0, width: 1}},
+				focused: {fill: 0xE1E3EE, rounded: 0, stroke: {color: 0xABAFC6, width: 1}},
+				disabled: {fill: 0xDBDBDB, rounded: 0}
+			},
+		})
+
+		input.placeholder = 'my name is...'
+		input.x = 64
+		input.y = 64
+		input.pivot.x = input.width/2
+		input.pivot.y = input.height/2
+
+		this.addMapTiles();
+		this.app.stage.addChild(input);
+
+
+
+		game.getNickname(input);
 	}
 };
 

@@ -56,7 +56,7 @@ var game = {
   flipTile(x, y, visible) {
     this.mapTiles[x][y].visible = visible;
   },
-  nickname: function(input){
+  getNickname: function(input){
     this.enter.press = function() {
       //send action: enter
       console.log("action(enter)");
@@ -69,6 +69,7 @@ var game = {
    }
   },
   init: function(nickname){
+    console.log("game init(" + nickname + ")");
     //Left arrow key press method
     this.left.press = function() {
     
