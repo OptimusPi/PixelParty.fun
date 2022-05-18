@@ -58,14 +58,17 @@ var game = {
   },
   getNickname: function(input){
     this.enter.press = function() {
+
+      if (!input.visible)
+        return;
+
       //send action: enter
       console.log("action(enter)");
-      //console.log(input.text);
 
       //input.visible = false;
-      //console.log("game.init(" + input.text + ");");
-      //game.init("" + input.text);
-      game.init("noob");
+      console.log("game.init(" + input.text + ");");
+      game.init("" + input.text);
+      input.visible = false;
    }
   },
   init: function(nickname){
