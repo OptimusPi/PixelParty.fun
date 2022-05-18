@@ -192,6 +192,20 @@ io.on('connection', function(socket){
   //Tell the connections that someone connected
   broadcastPlayerJoin(id);
 
+  // Tell the new player the map state
+  // TODO - move these
+  let width = 16;
+  let height = 16;
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y < height; y++) {
+      socket.emit('map', {
+        x, 
+        y, 
+        visible: mapTiles.get(x, y).visible
+      });
+    }
+  }
+
   socket.on('disconnect', function(){
       console.log('user disconnected');
       removeConnection(id);
@@ -227,6 +241,10 @@ io.on('connection', function(socket){
     sendGameChat(message);
   });
 
+  socket.on('nick', function(nickname){
+    player.name = nickname;
+  });
+  
   socket.on('chat', function(messageBody){
 
     var message = {

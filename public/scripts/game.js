@@ -6,6 +6,7 @@ var game = {
   up: keyboard(38),
   right: keyboard(39),
   down: keyboard(40),
+  enter: keyboard(13),
   mapTiles: [],
 
   //keyboard spacebar key
@@ -55,7 +56,19 @@ var game = {
   flipTile(x, y, visible) {
     this.mapTiles[x][y].visible = visible;
   },
-  init: function(){
+  nickname: function(input){
+    this.enter.press = function() {
+      //send action: enter
+      console.log("action(enter)");
+      //console.log(input.text);
+
+      //input.visible = false;
+      //console.log("game.init(" + input.text + ");");
+      //game.init("" + input.text);
+      game.init("noob");
+   }
+  },
+  init: function(nickname){
     //Left arrow key press method
     this.left.press = function() {
     
@@ -105,8 +118,9 @@ var game = {
     // Add blank map state
     this.addMapTiles(16, 16);
 
-    //Connect to game server
-    network.init();
+     //Connect to game server
+     console.log("network.init(" + nickname + ");");
+     network.init(nickname);
   }
 }
 

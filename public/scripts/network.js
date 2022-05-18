@@ -5,10 +5,13 @@ var network =  {
 	emit: function(command, data) {
 		this.socket.emit(command, data);
 	},
-	init: function() {
+	init: function(nickname) {
 		//connect to the game server
 		this.socket = io();
 
+		console.log("this.socket.emit('nick', " + nickname + ");");
+		this.socket.emit('nick', nickname);
+		
 		this.socket.on('disconnect', function() {
 			alert('Somethng went wrong: disconnected. needs to reconnect. Sorry about that. Refresh. Please. I beg you.');
 			location.reload();

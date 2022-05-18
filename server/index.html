@@ -16,7 +16,7 @@
 		<script type="text/javascript" src="https://github.com/pixijs/pixi-sound/releases/download/v2.0.0/pixi-sound.js"></script>  
 	</head>
 	
-	<body>
+	<body onload="graphics.start()">
 		<div class="container">
 			<div id="contentContainer">
 				<div id="canvas">
@@ -24,7 +24,7 @@
 				</div>
 			</div>
 			<form id="chat">
-				<textarea resize id="chat-feed">Pixel Party Fun</textarea>
+				<textarea resize id="chat-feed">Pixel Party</textarea>
 				<input id="chat-input" type='text' placeholder="(Send a chat message!)" autocomplete="off"/>
 				<button id="chat-submit">Send Chat</button>
 			</form>
@@ -32,11 +32,13 @@
 	</body>
 
 	<!-- JavaScript game code for Pixel Party. -->
-	<script type="text/javascript" src="scripts/keyboard.js"></script>
-	<script type="text/javascript" src="scripts/player.js"></script>
-	<script type="text/javascript" src="scripts/network.js"></script>
-	<script type="text/javascript" src="scripts/game.js"></script>
-	<script type="text/javascript" src="scripts/graphics.js"></script>
-	<script type="text/javascript" src="scripts/chat.js"></script>
+<!-- JavaScript game code for Pixel Party. -->
+<script type="text/javascript" src="scripts/PIXI.TextInput.min.js"></script>
+<script type="text/javascript" src="scripts/keyboard.js"></script>
+<script type="text/javascript" src="scripts/player.js"></script>
+<script type="text/javascript" src="scripts/network.js"></script>
+<script type="text/javascript" src="scripts/game.js"></script>
+<script type="text/javascript" src="scripts/graphics.js"></script>
+<script type="text/javascript" src="scripts/chat.js"></script>
 
 </html>

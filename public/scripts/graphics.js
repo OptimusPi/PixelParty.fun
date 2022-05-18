@@ -134,5 +134,3 @@ var layout = {
 	//    });
    }
 };
-
-graphics.start();
