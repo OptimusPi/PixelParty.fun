@@ -8,7 +8,7 @@ var path = require('path');
 // Models
 const Player = require('./player.js');
 const Connection = require('./connection.js');
-const MapState = require('./MapState.js');
+const MapState = require('./mapState.js');
 
 // The code in /public is independent from /server
 // Use Express to serve everything in the public folder as regular HTML/JavaScript
