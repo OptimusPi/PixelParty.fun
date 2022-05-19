@@ -8,6 +8,7 @@ var path = require('path');
 // Models
 const Player = require('./player.js');
 const Connection = require('./connection.js');
+const MapState = require('./MapState.js');
 
 // The code in /public is independent from /server
 // Use Express to serve everything in the public folder as regular HTML/JavaScript
@@ -39,6 +40,8 @@ function GetConnectionID(){
   connectionID++;
   return connectionID;
 }
+
+var mapTiles = new MapState(16, 16);
 
 function removeConnection(id){
  
@@ -80,22 +83,46 @@ function changeUsername(id, username)
   }
 }
 
+function actionPlayer(player, action)
+{
+  if (action === 'place') {
+
+    let x = player.x;
+    let y = player.y;
+    mapTiles.flip(x, y);
+    let visible = mapTiles.get(x, y).visible;
+
+    console.log(">>> place " + x + "," + y);
+    console.log(">>> visible? " + visible);
+
+    for (let i = 0; i < connections.length; i++){
+      if (connections[i].socket !== null) {
+        connections[i].socket.emit('map', {
+          x,
+          y,
+          visible
+        });
+      }
+    }
+  }
+}
+
 function movePlayer(id, direction)
 {
   var playerInfo = new Object();
   var i = 0;
   for (i = 0; i < connections.length; i++){
     if (connections[i].id === id) {
-      if (direction === 'left'){
+      if (direction === 'left' && connections[i].player.x > 0){
         connections[i].player.x --;
       }
-      if (direction === 'right'){
+      if (direction === 'right' && connections[i].player.x < 15){
         connections[i].player.x ++;
       }
-      if (direction === 'up'){
+      if (direction === 'up' && connections[i].player.y > 0){
         connections[i].player.y --;
       }
-      if (direction === 'down'){
+      if (direction === 'down' && connections[i].player.y < 15){
         connections[i].player.y ++;
       }
       playerInfo.id = id;
@@ -165,16 +192,36 @@ io.on('connection', function(socket){
   //Tell the connections that someone connected
   broadcastPlayerJoin(id);
 
+  // Tell the new player the map state
+  // TODO - move these
+  let width = 16;
+  let height = 16;
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y < height; y++) {
+      socket.emit('map', {
+        x, 
+        y, 
+        visible: mapTiles.get(x, y).visible
+      });
+    }
+  }
+
   socket.on('disconnect', function(){
       console.log('user disconnected');
       removeConnection(id);
   });
 
   socket.on('move', function(direction){
-    console.log('ID #' + id + ' moved their pixeol.');
+    console.log('ID #' + id + ' moved their pixel.');
 
     //TODO - check collision detection first
     movePlayer(id, direction);
+  });
+
+  socket.on('action', function(action){
+    console.log('ID #' + id + ' action: ' + action);
+    console.log("player: ", player);
+    actionPlayer(player, action);
   });
 
   socket.on('username', function(username){
@@ -194,6 +241,10 @@ io.on('connection', function(socket){
     sendGameChat(message);
   });
 
+  socket.on('nick', function(nickname){
+    player.name = nickname;
+  });
+  
   socket.on('chat', function(messageBody){
 
     var message = {

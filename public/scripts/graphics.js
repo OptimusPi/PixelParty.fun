@@ -4,6 +4,7 @@ const graphics = {
 	screenHeight: 128,
 	app: {},
 	players: [],
+	mapTiles: [],
 	heart: null,
 
 	removePlayer: function(id) {
@@ -19,13 +20,31 @@ const graphics = {
 		}
 	},
 
-	addPlayer: function(playerInfo) {
+	addMapTiles: function() {
+		//create player base, then add a sprite to it.
+		for (let x = 0; x < 16; x++){
+			this.mapTiles[x] = [];
+			for (let y = 0; y < 16; y++){
+				let mapTile = new PIXI.Graphics();
+				mapTile.beginFill(0x000000);
+				mapTile.drawRect(x*8, y*8, 8, 8);
+				this.mapTiles[x][y] = mapTile;
 
+				this.app.stage.addChild(mapTile);
+				this.mapTiles[x][y].visible = false;
+			}
+		}
+	},
+	flipTile(x, y, visible) {
+		this.mapTiles[x][y].visible = visible;
+	},
+	addPlayer: function(playerInfo) {
 		//create player base, then add a sprite to it.
 		var player = new Player(playerInfo.id, playerInfo.x, playerInfo.y);
 
 		// create new sprite TOO make it from the image textures loaded in
 		var playerSprite = new PIXI.Sprite(this.heart.texture);
+		
 		playerSprite.x = playerInfo.x * 8;
 		playerSprite.y = playerInfo.y * 8;
 		
@@ -54,15 +73,18 @@ const graphics = {
 	},
 
 	start: function(){
-		var type = "WebGL";
+		let type = "WebGL";
 		if(!PIXI.utils.isWebGLSupported()){
 			type = "canvas";
 		}
 		PIXI.utils.sayHello(type);
 
+		PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 		PIXI.settings.ROUND_PIXELS = true;
+		PIXI.settings.RENDER_OPTIONS.antialias = false;
+		PIXI.settings.RESOLUTION = 8;
 
-		this.app = new PIXI.Application(this.screenWidth, this.screenHeight, {backgroundColor : this.backgroundColor, resizeTo: window});
+		this.app = new PIXI.Application(this.screenWidth, this.screenHeight, {backgroundColor : 0xFFFFFF, resizeTo: window});
 		graphics.app.renderer.view.style.width = '512px';
 		graphics.app.renderer.view.style.height = '512px';
 
@@ -85,6 +107,9 @@ const graphics = {
 			.load(function (){
 				//map layers
 				graphics.heart = new PIXI.Sprite(PIXI.loader.resources.heart.texture);
+				
+			})
+			.onComplete.add((loader, res) => {
 				graphics.init();
 			});
 	},
@@ -92,7 +117,41 @@ const graphics = {
 	init: function() {
 		//Start the game!
 		//TODO add networking init to game.init
-		game.init();
+		this.addMapTiles();
+
+
+		// Menu //
+		//
+		// Choose nickname
+		let input = new PIXI.TextInput({
+			input: {
+				fontStyle: 'normal',
+				fontFamily: 'monospace',
+				textAlign: 'center',
+				fontSize: '8px',
+				width: '96px',
+				height: '16px',
+				color: '#26272E',
+			},
+			box: {
+				default: {fill: 0xE8E9F3, rounded: 0, stroke: {color: 0xCBCEE0, width: 1}},
+				focused: {fill: 0xE1E3EE, rounded: 0, stroke: {color: 0xABAFC6, width: 1}},
+				disabled: {fill: 0xDBDBDB, rounded: 0}
+			},
+		})
+
+		input.placeholder = 'my name is...'
+		input.x = 64
+		input.y = 64
+		input.pivot.x = input.width/2
+		input.pivot.y = input.height/2
+
+		this.addMapTiles();
+		this.app.stage.addChild(input);
+
+
+
+		game.getNickname(input);
 	}
 };
 
@@ -111,5 +170,3 @@ var layout = {
 	//    });
    }
 };
-
-graphics.start();
