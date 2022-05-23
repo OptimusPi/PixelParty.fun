@@ -6,6 +6,16 @@ const graphics = {
 	players: [],
 	mapTiles: [],
 	heart: null,
+	colors: ['0xFFFFFF', // White Square 0
+		'0X000000', // Black Square 1
+		'0XDD2E44', // Red Square 2 
+		'0XF4900C', // Orange Square 3
+		'0XFDCB58', // Yellow Square 4 
+		'0X78B159', // Green Square 5
+		'0X55ACEE', // Blue Square 6
+		'0XAA8ED6', // Purple Square 7
+		'0XC1694F', // Brown Square 8
+	],
 
 	removePlayer: function(id) {
 		var i;
@@ -22,21 +32,28 @@ const graphics = {
 
 	addMapTiles: function() {
 		//create player base, then add a sprite to it.
-		for (let x = 0; x < 16; x++){
-			this.mapTiles[x] = [];
-			for (let y = 0; y < 16; y++){
-				let mapTile = new PIXI.Graphics();
-				mapTile.beginFill(0x000000);
-				mapTile.drawRect(x*8, y*8, 8, 8);
-				this.mapTiles[x][y] = mapTile;
+		for (let colorId = 0; colorId < 9; colorId++) {
+			this.mapTiles[colorId] = [];
+			
+			for (let x = 0; x < 16; x++){
+				this.mapTiles[colorId][x] = [];
+				for (let y = 0; y < 16; y++){
+					let mapTile = new PIXI.Graphics();
+					mapTile.beginFill(this.colors[colorId]);
+					mapTile.drawRect(x*8, y*8, 8, 8);
+					this.mapTiles[colorId][x][y] = mapTile;
 
-				this.app.stage.addChild(mapTile);
-				this.mapTiles[x][y].visible = false;
+					this.app.stage.addChild(mapTile);
+					this.mapTiles[colorId][x][y].visible = colorId === 0;
+				}
 			}
 		}
 	},
-	flipTile(x, y, visible) {
-		this.mapTiles[x][y].visible = visible;
+	flipTile(x, y, color) {
+		for (let colorId = 0; colorId < 9; colorId++) {
+			// Set the tile's color to visible and all other colors false
+			this.mapTiles[colorId][x][y].visible = (color === colorId);
+		}
 	},
 	addPlayer: function(playerInfo) {
 		//create player base, then add a sprite to it.

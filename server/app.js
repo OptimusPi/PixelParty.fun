@@ -90,17 +90,16 @@ function actionPlayer(player, action)
     let x = player.x;
     let y = player.y;
     mapTiles.flip(x, y);
-    let visible = mapTiles.get(x, y).visible;
+    let color = mapTiles.get(x, y).color;
 
-    console.log(">>> place " + x + "," + y);
-    console.log(">>> visible? " + visible);
+    console.log(">>> place " + x + "," + y + "(" + color +")");
 
     for (let i = 0; i < connections.length; i++){
       if (connections[i].socket !== null) {
         connections[i].socket.emit('map', {
           x,
           y,
-          visible
+          color
         });
       }
     }
@@ -201,7 +200,7 @@ io.on('connection', function(socket){
       socket.emit('map', {
         x, 
         y, 
-        visible: mapTiles.get(x, y).visible
+        color: mapTiles.get(x, y).color
       });
     }
   }

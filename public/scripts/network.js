@@ -38,8 +38,8 @@ var network =  {
 
 		// map action event
 		this.socket.on('map', function(mapEvent){
-			game.flipTile(mapEvent.x, mapEvent.y, mapEvent.visible);
-			graphics.flipTile(mapEvent.x, mapEvent.y, mapEvent.visible);
+			game.flipTile(mapEvent.x, mapEvent.y, mapEvent.color);
+			graphics.flipTile(mapEvent.x, mapEvent.y, mapEvent.color);
 		});
 
 		// chat event
