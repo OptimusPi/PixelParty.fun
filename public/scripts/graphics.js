@@ -6,8 +6,8 @@ const graphics = {
 	players: [],
 	mapTiles: [],
 	heart: null,
-	colors: ['0xFFFFFF', // White Square 0
-		'0X000000', // Black Square 1
+	colors: ['0xE6E7E8', // White Square 0
+		'0X31373D', // Black Square 1
 		'0XDD2E44', // Red Square 2 
 		'0XF4900C', // Orange Square 3
 		'0XFDCB58', // Yellow Square 4 
