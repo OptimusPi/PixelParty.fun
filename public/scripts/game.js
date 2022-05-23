@@ -49,12 +49,12 @@ var game = {
 		for (let x = 0; x < width; x++){
 			this.mapTiles[x] = [];
 			for (let y = 0; y < height; y++){
-				this.mapTiles[x][y] = {visible: false};
+				this.mapTiles[x][y] = {color: 0};
 			}
 		}
 	},
-  flipTile(x, y, visible) {
-    this.mapTiles[x][y].visible = visible;
+  flipTile(x, y, color) {
+    this.mapTiles[x][y].color = color;
   },
   getNickname: function(input){
     this.enter.press = function() {
@@ -63,10 +63,6 @@ var game = {
         return;
 
       //send action: enter
-      console.log("action(enter)");
-
-      //input.visible = false;
-      console.log("game.init(" + input.text + ");");
       game.init("" + input.text);
       input.visible = false;
    }
