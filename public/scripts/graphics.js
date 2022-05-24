@@ -6,15 +6,15 @@ const graphics = {
 	players: [],
 	mapTiles: [],
 	heart: null,
-	colors: ['0xE6E7E8', // White Square 0
-		'0X31373D', // Black Square 1
-		'0XDD2E44', // Red Square 2 
-		'0XF4900C', // Orange Square 3
-		'0XFDCB58', // Yellow Square 4 
-		'0X78B159', // Green Square 5
-		'0X55ACEE', // Blue Square 6
-		'0XAA8ED6', // Purple Square 7
-		'0XC1694F', // Brown Square 8
+	colors: ['0xF2F2F2', // White Square 0
+		'0X383838', // Black Square 1
+		'0XE81224', // Red Square 2 
+		'0XF7630C', // Orange Square 3
+		'0XFFF100', // Yellow Square 4 
+		'0X16C60C', // Green Square 5
+		'0X0078D7', // Blue Square 6
+		'0X886CE4', // Purple Square 7
+		'0X8E562E', // Brown Square 8
 	],
 
 	removePlayer: function(id) {
