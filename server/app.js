@@ -211,20 +211,15 @@ io.on('connection', function(socket){
   });
 
   socket.on('move', function(direction){
-    console.log('ID #' + id + ' moved their pixel.');
-
     //TODO - check collision detection first
     movePlayer(id, direction);
   });
 
   socket.on('action', function(action){
-    console.log('ID #' + id + ' action: ' + action);
-    console.log("player: ", player);
     actionPlayer(player, action);
   });
 
   socket.on('username', function(username){
-
     // TODO limit chat to (100?) characters
     console.log('ID #' + id + ' changed username to: ' + username);
     var messageBody = player.name + ' is now known as ' + username + '.';
