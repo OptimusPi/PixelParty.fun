@@ -32,16 +32,19 @@ function DiscordBot(config, printMap){
 
       if (environment === "production") {
         this.channel.send("Pixel Party time :eyes:");
+      } else {
+        this.channel.send(`Pixel Party time :eyes: environment: ${environment}`);
       }
     });
     
     this.client.on('messageCreate', (message) => {
       if(message.member.roles.cache.some(role => role.name === config.role)){
-        if(message.author.bot) return;  
+        if(message.author.bot) return;
         if(message.content == "!pixelparty"){
           message.reply('https://www.pixelparty.fun/');
         }
         else if(message.content === "!screenshot"){
+            console.log("Discord Bot heard '!screenshot'");
             let screenshot = printMap();
             message.reply(screenshot);
         }
