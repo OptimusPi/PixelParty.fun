@@ -1,14 +1,24 @@
 // Libraries
+require('dotenv').config({path:'server/.env'});
+var process = require("process");
+
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require('path');
 
+const { inherits } = require('util');
+
+var mongoose = require('mongoose');
+
 // Models
 const Player = require('./player.js');
 const Connection = require('./connection.js');
 const MapState = require('./mapState.js');
+
+// Discord bot
+const DiscordBot = require('./DiscordBot.js');
 
 // The code in /public is independent from /server
 // Use Express to serve everything in the public folder as regular HTML/JavaScript
@@ -26,11 +36,74 @@ app.get('/healthcheck', function (req, res) {
   }});
 });
 
+var mapTiles = new MapState(16, 16);
+
+const mapStateSchema = new mongoose.Schema({
+  name: {
+      type: String,
+      unique: true
+  },
+  date: Date,
+  mapState: Object
+});
+
+const MapStateModel = mongoose.model('ColorMapState4', mapStateSchema);
+
+async function ensureMap() {
+  console.log('Loading map from mongoDB...');
+
+  //process.env.MONGODB_URI
+  await mongoose.connect(process.env.MONGODB_URI);
+
+  const dbMapState = await MapStateModel.findOne({name: "color-freedraw"});
+  
+  if (dbMapState) {
+    mapTiles.setTiles(dbMapState.mapState.tiles);
+  } else {
+    let newMap = new MapStateModel({name: "color-freedraw", date: Date(), mapState: mapTiles });
+    newMap.save();
+  }
+}
+
+ensureMap();
+
+function printMap() {
+  console.log("printMap()");
+
+  let colors = [
+    '⬜', '⬛', '🟥', '🟧', '🟨', '🟩', '🟦', '🟪', '🟫'
+  ];
+
+  let message = '\`\`\`\n';
+
+  for (let y = 0; y < 16; y++) {
+    for (let x = 0; x < 16; x++) {
+      colorId = mapTiles.getTiles()[x][y].color;
+      message += colors[colorId];
+    }
+    message += '\n';
+  }
+
+  message += '\`\`\`';
+
+  console.log("message: ", message);
+  return message;
+}
+
+// Initialize Discord client and connect
+const discordConfig = {
+  environment: process.env.ENVIRONMENT,
+  token: process.env.DISCORD_TOKEN,
+  role: process.env.DISCORD_ROLE,
+  channel: process.env.DISCORD_CHANNEL,
+}
+let discordBot = new DiscordBot(discordConfig, () => { return printMap()});
+discordBot.init();
+
 // Server on port 3141 
 http.listen(3141, function(){
   console.log('listening on *:3141');
 });
-
 
 // Store all websockets connections
 var connections = [];
@@ -41,10 +114,7 @@ function GetConnectionID(){
   return connectionID;
 }
 
-var mapTiles = new MapState(16, 16);
-
 function removeConnection(id){
- 
   let i;
 
   for (i = 0; i < connections.length; i++){
@@ -61,7 +131,7 @@ function removeConnection(id){
     if (connections[c].socket !== null)
       connections[c].socket.emit('logout', connections[i].id);
     else
-      console.log('ERROR: cannot remove ocnnection because socket is null for id# ' + connections[c].id);
+      console.log('ERROR: cannot remove connection because socket is null for id# ' + connections[c].id);
   }
 
   //remove connection info from server session.
@@ -83,7 +153,7 @@ function changeUsername(id, username)
   }
 }
 
-function actionPlayer(player, action)
+async function actionPlayer(player, action)
 {
   if (action === 'place') {
 
@@ -103,6 +173,18 @@ function actionPlayer(player, action)
         });
       }
     }
+
+    // Save to mongoDb
+    const dbMapState = await MapStateModel.findOneAndUpdate(
+      {
+        name: "color-freedraw" // Find by this key
+      }, 
+      {
+        date: Date(), // Update timestamp
+        mapState: mapTiles // update map state
+      } 
+    );
+    dbMapState.update();
   }
 }
 
@@ -139,7 +221,6 @@ function movePlayer(id, direction)
 
 }
 
-//TODO proper scoping
 sendGameChat = function(message) {
   //TODO - make a function to send to all clients
   for (i = 0; i < connections.length; i++){
@@ -181,6 +262,7 @@ function broadcastPlayerJoin(id)
 
 io.on('connection', function(socket){
   console.log('someone connected');
+
   var id = GetConnectionID();
   var player = new Player(id, 'noob', 3, 5);
   var connection = new Connection(id, player, socket);
@@ -215,8 +297,8 @@ io.on('connection', function(socket){
     movePlayer(id, direction);
   });
 
-  socket.on('action', function(action){
-    actionPlayer(player, action);
+  socket.on('action', async function(action){
+    await actionPlayer(player, action);
   });
 
   socket.on('username', function(username){
