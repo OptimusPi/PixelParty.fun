@@ -23,9 +23,13 @@
   "license": "ISC",
   "homepage": "https://www.github.com/optimuspi/PixelPandemonium#readme",
   "dependencies": {
+    "discord.js": "^13.7.0",
+    "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "http": "^0.0.1-security",
+    "mongoose": "^6.3.4",
     "path": "^0.12.7",
+    "process": "^0.11.10",
     "socket.io": "^4.5.0"
   }
 }
