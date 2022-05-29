@@ -1,7 +1,7 @@
 // Libraries
 require('dotenv').config({path:'server/.env'});
 var process = require("process");
-
+const Jimp = require('jimp');
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
@@ -49,6 +49,11 @@ const mapStateSchema = new mongoose.Schema({
 
 const MapStateModel = mongoose.model('ColorMapState4', mapStateSchema);
 
+async function saveMap() {
+  let newMap = new MapStateModel({name: "color-freedraw", date: Date(), mapState: mapTiles });
+  newMap.save();
+}
+
 async function ensureMap() {
   console.log('Loading map from mongoDB...');
 
@@ -66,6 +71,74 @@ async function ensureMap() {
 }
 
 ensureMap();
+
+function clearMap() {
+  for (let x = 0; x < 16; x++) {
+    for (let y = 0; y < 16; y++) {
+      const color = 0;
+      // Tell every connection the map is clearing
+      // Get color of each map tile
+      mapTiles[x][y].color = color;
+
+      for (let i = 0; i < connections.length; i++){
+        if (connections[i].socket !== null) {
+          connections[i].socket.emit('map', {
+            x,
+            y,
+            color
+          });
+        }
+      }
+    }
+  }
+  saveMap();
+}
+
+function screenshotMap(resolution) {
+  console.log("screenshotMap()");
+
+	const colors = [0xF2F2F2, // White Square 0
+		0X383838, // Black Square 1
+		0XE81224, // Red Square 2 
+		0XF7630C, // Orange Square 3
+		0XFFF100, // Yellow Square 4 
+		0X16C60C, // Green Square 5
+		0X0078D7, // Blue Square 6
+		0X886CE4, // Purple Square 7
+		0X8E562E, // Brown Square 8
+	];
+
+  const image = new Jimp(16 * resolution, 16 * resolution, function (err, image) {
+    if (err) throw err;
+  
+
+    console.log("Creating png screenshot");
+
+    for (let x = 0; x < 16; x++) {
+      for (let y = 0; y < 16; y++) {
+        
+        // Get color of each map tile
+        let color = colors[mapTiles.get(x, y).color];
+
+        // make bigger pixels for resolution
+        // resolution of 1 will only run once and draw one pixel (16x16 image) 
+        for (let rx = 0; rx < resolution; rx++) {
+          for (let ry = 0; ry < resolution; ry++) {
+            image.setPixelColor(color, x*resolution + rx, y*resolution + ry);
+          }
+        }
+      }
+    }
+
+    console.log("screenshot writing to screenshot.png");
+
+    image.write('screenshot.png', (err) => {
+      if (err) throw err;
+    });
+  });
+
+  return image;
+}
 
 function printMap() {
   console.log("printMap()");
@@ -94,10 +167,12 @@ function printMap() {
 const discordConfig = {
   environment: process.env.ENVIRONMENT,
   token: process.env.DISCORD_TOKEN,
-  role: process.env.DISCORD_ROLE,
   channel: process.env.DISCORD_CHANNEL,
 }
-let discordBot = new DiscordBot(discordConfig, () => { return printMap()});
+let discordBot = new DiscordBot(discordConfig, 
+  () => { return printMap()}, 
+  () => {clearMap()}, 
+  () => {return screenshotMap(8)});
 discordBot.init();
 
 // Server on port 3141 
@@ -174,17 +249,7 @@ async function actionPlayer(player, action)
       }
     }
 
-    // Save to mongoDb
-    const dbMapState = await MapStateModel.findOneAndUpdate(
-      {
-        name: "color-freedraw" // Find by this key
-      }, 
-      {
-        date: Date(), // Update timestamp
-        mapState: mapTiles // update map state
-      } 
-    );
-    dbMapState.update();
+    saveMap();
   }
 }
 
