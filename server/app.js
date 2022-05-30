@@ -57,12 +57,12 @@ async function saveMap() {
 async function ensureMap() {
   console.log('Loading map from mongoDB...');
 
-  //process.env.MONGODB_URI
   await mongoose.connect(process.env.MONGODB_URI);
 
   const dbMapState = await MapStateModel.findOne({name: "color-freedraw"});
   
   if (dbMapState) {
+    console.log("found map state.");
     mapTiles.setTiles(dbMapState.mapState.tiles);
   } else {
     let newMap = new MapStateModel({name: "color-freedraw", date: Date(), mapState: mapTiles });
@@ -94,47 +94,53 @@ function clearMap() {
   saveMap();
 }
 
-function screenshotMap(resolution) {
+async function screenshotMap(resolution) {
   console.log("screenshotMap()");
 
-	const colors = [0xF2F2F2, // White Square 0
-		0X383838, // Black Square 1
-		0XE81224, // Red Square 2 
-		0XF7630C, // Orange Square 3
-		0XFFF100, // Yellow Square 4 
-		0X16C60C, // Green Square 5
-		0X0078D7, // Blue Square 6
-		0X886CE4, // Purple Square 7
-		0X8E562E, // Brown Square 8
+	const colors = [
+    '#F2F2F2', // White Square 0
+		'#383838', // Black Square 1
+		'#E81224', // Red Square 2 
+		'#F7630C', // Orange Square 3
+		'#FFF100', // Yellow Square 4 
+		'#16C60C', // Green Square 5
+		'#0078D7', // Blue Square 6
+		'#886CE4', // Purple Square 7
+		'#8E562E', // Brown Square 8
 	];
 
-  const image = new Jimp(16 * resolution, 16 * resolution, function (err, image) {
-    if (err) throw err;
+  // reads a plain white png
+  const image = await Jimp.read('public/16_16.png');
+
+  // resizes the image to the 
+  image.resize(16*resolution, 16*resolution)
+    .colorType(6)
+    .quality(100);
   
 
-    console.log("Creating png screenshot");
+  console.log("Creating png screenshot");
 
-    for (let x = 0; x < 16; x++) {
-      for (let y = 0; y < 16; y++) {
-        
-        // Get color of each map tile
-        let color = colors[mapTiles.get(x, y).color];
-
-        // make bigger pixels for resolution
-        // resolution of 1 will only run once and draw one pixel (16x16 image) 
-        for (let rx = 0; rx < resolution; rx++) {
-          for (let ry = 0; ry < resolution; ry++) {
-            image.setPixelColor(color, x*resolution + rx, y*resolution + ry);
-          }
+  for (let x = 0; x < 16; x++) {
+    for (let y = 0; y < 16; y++) {
+      
+      // Get color of each map tile
+      let color = Jimp.cssColorToHex(colors[mapTiles.get(x, y).color]);
+      const hex2 = Jimp.rgbaToInt(rgba.g, rgba.b, rgba.r, rgba.a);
+      
+      // make bigger pixels for resolution
+      // resolution of 1 will only run once and draw one pixel (16x16 image) 
+      for (let rx = 0; rx < resolution; rx++) {
+        for (let ry = 0; ry < resolution; ry++) {
+          image.setPixelColor(color, x*resolution + rx, y*resolution + ry);
         }
       }
     }
+  }
 
-    console.log("screenshot writing to screenshot.png");
+  console.log("screenshot writing to screenshot.png");
 
-    image.write('screenshot.png', (err) => {
-      if (err) throw err;
-    });
+  image.write('public/screenshot.png', (err) => {
+    if (err) throw err;
   });
 
   return image;
@@ -172,7 +178,7 @@ const discordConfig = {
 let discordBot = new DiscordBot(discordConfig, 
   () => { return printMap()}, 
   () => {clearMap()}, 
-  () => {return screenshotMap(8)});
+  (resolution) => {return screenshotMap(resolution)});
 discordBot.init();
 
 // Server on port 3141 

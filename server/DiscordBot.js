@@ -13,7 +13,6 @@ function DiscordBot(config, printMap, clearMap, screenshotMap){
 
     this.client = new Discord.Client({intents: 32767 });
 
-    console.log("DiscordBot: this.client.login() with token: ", config.token);
     await this.client.login(config.token);
     console.log("DiscordBot: this.client.login() complete");
 
@@ -34,43 +33,56 @@ function DiscordBot(config, printMap, clearMap, screenshotMap){
       this.connected = true;
 
       if (environment === "production") {
-        this.channel.send("Pixel Party time :eyes:");
+        this.channel.send(":art: Pixel Party time :eyes:");
       } else {
-        this.channel.send(`Pixel Party time :eyes: environment: ${environment}`);
+        this.channel.send(`:art: Pixel Party time :eyes: environment: ${environment}`);
       }
     });
     
     this.client.on('messageCreate', (message) => {
        // Ignore bot's own messages
-        if (message.author.bot) {
+        if (message.author.bot || !message.content.startsWith("!pixel")) {
           return;
         }
 
         // Help
         if (message.content == "!pixel help"){
-          message.reply('!save\t\t(saves state) \r\n' +
-            '!pixel party\t\t(creates a new lobby)\r\n' +
-            '!pixel save\t\t(saves a screenshot)\r\n' +
-            '!pixel emoji\t\t(https://www.pixelparty.fun/)\r\n' +
-            '!pixel wipe\t\t(https://www.pixelparty.fun/)\r\n'
+          message.reply(
+            '!pixel party\t(creates a new lobby)\r\n' +
+            '!pixel print\t(Send game state with emoji codeblock)\r\n' +
+            '!pixel screenshot {scale}\t(Take a screenshot, scale 1=16px, scale 2=32px, etc.)\r\n' +
+            '!pixel wipe\t(clear the current state)'
             );
         }
         // Pixel party link
-        else if (message.content == "!party"){
+        else if (message.content === "!pixel party"){
           message.reply('https://www.pixelparty.fun/');
         }
         // Emoji-Screenshot sent to discord, and save to mongoDb
-        else if(message.content === "!save"){
+        else if(message.content === "!pixel print"){
             let screenshot = printMap();
             message.reply(screenshot);
         }
          // PNG-Screenshot sent to discord, and save to mongoDb
-        else if(message.content === "!screenshot"){
-          let screenshot = screenshotMap();
-          message.reply(screenshot);
+        else if(message.content.startsWith("!pixel screenshot")){
+          let args = message.content.split(" ");
+
+          try {
+            let resolution = parseInt(args[args.length - 1]);
+            console.log("resolution: ", resolution);
+            let screenshot = screenshotMap(resolution);
+            //message.reply(screenshot);
+
+            message.reply("PixelParty.fun Screenshot", {
+              files: ['https://www.pixelparty.fun/screenshot.png']
+            });
+          } catch (ex) {
+            message.reply("usage \`!pixel screenshot 8\`");
+          }
+          
         }
         // Clear canvas and start over
-        else if(message.content === "!wipe"){
+        else if(message.content === "!pixel wipe"){
           let screenshot = clearMap();
           message.reply(screenshot);
         }
