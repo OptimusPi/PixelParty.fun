@@ -14,14 +14,15 @@ function DiscordBot(config, printMap, clearMap, screenshotMap){
     console.log(" this.getAndSendScreenshot:screenshotUrl: ", screenshotUrl);
     console.log(" this.getAndSendScreenshot:screenshotHash: ", screenshotHash);
     
+    const file = new Discord.MessageAttachment('./screenshot.png');
     const embed = new Discord.MessageEmbed()
-      .setColor('#0099ff')
-      .setTitle(`Pixel Party Screenshot - ${screenshotHash}`)
-      .setImage(screenshotUrl)
+      .setColor('#0078D7')
+      .setTitle(`TEST Pixel Party Screenshot - ${screenshotHash}`)
+      .setImage('attachment://screenshot.png')
       .setTimestamp();
   
     console.log("message embed: ", embed);
-    this.client.channel.send({ embeds: [embed], files: [screenshotUrl]});
+    this.client.channel.send({ embeds: [embed], files: [file]});
   };
 
   this.init = async function(){

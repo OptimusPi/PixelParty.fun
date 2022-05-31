@@ -85,6 +85,8 @@ async function ensureMap() {
 
 ensureMap();
 
+console.log("Date timestamp on deploy: ", new Date());
+
 function clearMap() {
   for (let x = 0; x < 16; x++) {
     for (let y = 0; y < 16; y++) {
