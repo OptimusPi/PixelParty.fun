@@ -22,7 +22,7 @@ function DiscordBot(config, printMap, clearMap, screenshotMap){
 
       
     console.log("message embed: ", embed);
-    this.client.channel.send({ embeds: [embed]});
+    this.client.channel.send({ embeds: [embed], files: [screenshotUrl]});
   };
 
   this.init = async function(){
