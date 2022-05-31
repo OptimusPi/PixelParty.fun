@@ -29,6 +29,11 @@ app.get('/', function(req, res){
   res.sendFile('index.html', { root: __dirname });
 });
 
+app.get('/screenshot.png', function(req, res) {
+  res.set('Cache-Control', 'no-store');
+  res.sendFile('screenshot.png');
+})
+
 app.get('/healthcheck', function (req, res) {
   res.status(200).send({ 
     healthcheck: {
@@ -150,7 +155,7 @@ async function screenshotMap(resolution) {
   console.log("screenshot writing to screenshot.png");
 
   try {
-    await image.writeAsync('public/screenshot.png');
+    await image.writeAsync('server/screenshot.png');
     console.log("screenshot saved properly!");
   }
   catch (ex) {
