@@ -88,6 +88,10 @@ function DiscordBot(config, printMap, clearMap, screenshotMap){
           try {
             let resolution = parseInt(args[args.length - 1]);
             console.log("resolution: ", resolution);
+
+            if (typeof(resolution) === NaN) {
+              throw "NaN";
+            }
             this.getAndSendScreenshot(resolution);
            
             console.log("getAndSendScreenshot complete");
