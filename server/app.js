@@ -130,8 +130,6 @@ async function screenshotMap(resolution) {
     .colorType(6)
     .quality(100);
   
-  
-
   console.log("Creating png screenshot");
 
   for (let x = 0; x < 16; x++) {
@@ -155,7 +153,7 @@ async function screenshotMap(resolution) {
   console.log("screenshot writing to screenshot.png");
 
   try {
-    await image.writeAsync('screenshot.png');
+    await image.writeAsync('server/screenshot.png');
     console.log("screenshot saved properly!");
   }
   catch (ex) {
