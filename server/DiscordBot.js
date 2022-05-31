@@ -10,17 +10,16 @@ function DiscordBot(config, printMap, clearMap, screenshotMap){
 
   this.getAndSendScreenshot = async function(resolution) {
     console.log("resolution: ", resolution);
-    let screenshotUrl = await this.screenshotMap(resolution);
-    console.log("screenshotUrl: ", screenshotUrl);
-
-    //message.reply(screenshot);
+    let {screenshotUrl, screenshotHash} = await this.screenshotMap(resolution);
+    console.log(" this.getAndSendScreenshot:screenshotUrl: ", screenshotUrl);
+    console.log(" this.getAndSendScreenshot:screenshotHash: ", screenshotHash);
+    
     const embed = new Discord.MessageEmbed()
       .setColor('#0099ff')
-      .setTitle('Pixel Party Screenshot')
+      .setTitle(`Pixel Party Screenshot - ${screenshotHash}`)
       .setImage(screenshotUrl)
       .setTimestamp();
-
-      
+  
     console.log("message embed: ", embed);
     this.client.channel.send({ embeds: [embed], files: [screenshotUrl]});
   };
