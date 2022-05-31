@@ -45,8 +45,8 @@ function DiscordBot(config, printMap, clearMap, screenshotMap){
           "type": "PLAYING"
       });
 
-      //this.channel = this.channels.cache.get('977799485558251550');
-      this.channel = this.channels.cache.find(channel => channel.name === config.channel)
+      this.channel = this.channels.cache.get('977799485558251550');
+      //this.channel = this.channels.cache.find(channel => channel.name === config.channel)
       this.connected = true;
 
       if (environment === "production") {
