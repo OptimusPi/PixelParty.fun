@@ -125,6 +125,7 @@ async function screenshotMap(resolution) {
     .colorType(6)
     .quality(100);
   
+  let screenshotHash = image.hash();
 
   console.log("Creating png screenshot");
 
@@ -154,7 +155,10 @@ async function screenshotMap(resolution) {
     console.log("error saving screenshot: ", ex);
   }
 
-  return 'https://www.pixelparty.fun/screenshot.png';
+  return {
+    screenshotUrl: 'https://www.pixelparty.fun/screenshot.png',
+    screenshotHash: screenshotHash
+  };
 }
 
 function printMap() {
