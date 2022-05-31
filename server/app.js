@@ -125,7 +125,7 @@ async function screenshotMap(resolution) {
     .colorType(6)
     .quality(100);
   
-  let screenshotHash = image.hash();
+  
 
   console.log("Creating png screenshot");
 
@@ -144,6 +144,8 @@ async function screenshotMap(resolution) {
       }
     }
   }
+
+  let screenshotHash = image.hash();
 
   console.log("screenshot writing to screenshot.png");
 
