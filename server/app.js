@@ -394,7 +394,7 @@ io.on('connection', function(socket){
   });
 
   socket.on('nick', function(nickname){
-    if (typeof(nickname) === string && nickname.length < 100) {
+    if (typeof(nickname) === "string" && nickname.length < 100) {
       player.name = nickname;
       console.log(`${nickname} has joined Pixel Party!`);
     }
