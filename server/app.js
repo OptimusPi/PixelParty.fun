@@ -50,8 +50,16 @@ const mapStateSchema = new mongoose.Schema({
 const MapStateModel = mongoose.model('ColorMapState4', mapStateSchema);
 
 async function saveMap() {
-  let newMap = new MapStateModel({name: "color-freedraw", date: Date(), mapState: mapTiles });
-  newMap.save();
+  const dbMapState = await MapStateModel.findOneAndUpdate(
+    {
+      name: "color-freedraw" // Find by this key
+    }, 
+    {
+      date: Date(), // Update timestamp
+      mapState: mapTiles // update map state
+    } 
+  );
+  dbMapState.update();
 }
 
 async function ensureMap() {
