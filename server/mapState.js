@@ -53,6 +53,14 @@ class MapState {
         this.tiles[x][y].color = colorId;
     }
 
+    clear() {
+        for (let x = 0; x < this.width; x++) {
+            for (let y = 0; y < this.height; y++) {
+                this.tiles[x][y].color = 0;
+            }
+        }
+    }
+
     get(x, y) {
         return this.tiles[x][y];
     }

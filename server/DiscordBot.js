@@ -6,7 +6,13 @@ const Discord = require('discord.js');
 function DiscordBot(config, printMap, clearMap, screenshotMap){
   this.config = config;
   this.connected = false;
+  this.clearMap = clearMap;
   this.screenshotMap = screenshotMap;
+
+  this.clearMap = async function() {
+    await this.clearMap();
+    this.client.channel.send('The canvas has been cleared! :eyes:');
+  };
 
   this.getAndSendScreenshot = async function(resolution) {
     console.log("resolution: ", resolution);
