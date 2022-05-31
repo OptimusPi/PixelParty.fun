@@ -31,7 +31,7 @@ app.get('/', function(req, res){
 
 app.get('/screenshot.png', function(req, res) {
   res.set('Cache-Control', 'no-store');
-  res.sendFile('screenshot.png');
+  res.sendFile('screenshot.png', { root: __dirname });
 })
 
 app.get('/healthcheck', function (req, res) {
