@@ -123,7 +123,7 @@ async function screenshotMap(resolution) {
 	];
 
   // reads a plain white png
-  const image = await Jimp.read('public/16_16.png');
+  const image = await Jimp.read('server/16_16.png');
 
   // resizes the image to the 
   image.resize(16*resolution, 16*resolution)
