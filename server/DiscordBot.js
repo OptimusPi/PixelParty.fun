@@ -14,11 +14,11 @@ function DiscordBot(config, printMap, clearMap, screenshotMap){
     console.log(" this.getAndSendScreenshot:screenshotUrl: ", screenshotUrl);
     console.log(" this.getAndSendScreenshot:screenshotHash: ", screenshotHash);
     
-    const file = new Discord.MessageAttachment('./screenshot.png');
+    const file = new Discord.MessageAttachment(screenshotUrl);
     const embed = new Discord.MessageEmbed()
       .setColor('#0078D7')
-      .setTitle(`TEST Pixel Party Screenshot - ${screenshotHash}`)
-      .setImage('attachment://screenshot.png')
+      .setTitle(`Pixel Party Screenshot (${screenshotHash})`)
+      .setImage(`attachment://${screenshotHash}.png`)
       .setTimestamp();
   
     console.log("message embed: ", embed);
@@ -91,8 +91,8 @@ function DiscordBot(config, printMap, clearMap, screenshotMap){
             console.log("resolution: ", resolution);
 
             if (Number.isNaN(resolution)) {
-              resolution = 4;
-              console.log("screenshot resolution is not a number. Using 4 as default.")
+              resolution = 32;
+              console.log("screenshot resolution is not a number. Using 32 as default.")
             }
             this.getAndSendScreenshot(resolution);
            
