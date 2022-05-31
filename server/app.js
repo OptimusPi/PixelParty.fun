@@ -125,7 +125,6 @@ async function screenshotMap(resolution) {
       
       // Get color of each map tile
       let color = Jimp.cssColorToHex(colors[mapTiles.get(x, y).color]);
-      const hex2 = Jimp.rgbaToInt(rgba.g, rgba.b, rgba.r, rgba.a);
       
       // make bigger pixels for resolution
       // resolution of 1 will only run once and draw one pixel (16x16 image) 
@@ -139,11 +138,16 @@ async function screenshotMap(resolution) {
 
   console.log("screenshot writing to screenshot.png");
 
-  image.write('public/screenshot.png', (err) => {
-    if (err) throw err;
-  });
+  try {
+    image.write('public/screenshot.png', (err) => {
+      if (err)  console.log("error saving screenshot: ", err);
+    });
+  }
+  catch (ex) {
+    console.log("error saving screenshot: ", ex);
+  }
 
-  return image;
+  return 'https://www.pixelparty.fun/screenshot.png';
 }
 
 function printMap() {
@@ -175,10 +179,13 @@ const discordConfig = {
   token: process.env.DISCORD_TOKEN,
   channel: process.env.DISCORD_CHANNEL,
 }
+
 let discordBot = new DiscordBot(discordConfig, 
   () => { return printMap()}, 
   () => {clearMap()}, 
-  (resolution) => {return screenshotMap(resolution)});
+  screenshotMap
+);
+
 discordBot.init();
 
 // Server on port 3141 
