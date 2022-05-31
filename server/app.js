@@ -147,9 +147,8 @@ async function screenshotMap(resolution) {
   console.log("screenshot writing to screenshot.png");
 
   try {
-    image.write('public/screenshot.png', (err) => {
-      if (err)  console.log("error saving screenshot: ", err);
-    });
+    await image.writeAsync('public/screenshot.png');
+    console.log("screenshot saved properly!");
   }
   catch (ex) {
     console.log("error saving screenshot: ", ex);
@@ -314,6 +313,9 @@ sendGameChat = function(message) {
       connections[i].socket.emit('chat', message);
     }
   }
+
+  //Send chat to Discord
+  discordBot.sendMessage(`<${message.username}> ${message.body}`);
 }
 
 function broadcastJoinAll(newPlayerConnectionI)
@@ -387,28 +389,14 @@ io.on('connection', function(socket){
     await actionPlayer(player, action);
   });
 
-  socket.on('username', function(username){
-    // TODO limit chat to (100?) characters
-    console.log('ID #' + id + ' changed username to: ' + username);
-    var messageBody = player.name + ' is now known as ' + username + '.';
-    
-    var message = {
-      username: 'INFO',
-      body: messageBody
-    };
-
-    changeUsername(id, username);
-    
-    //tell all clients player has spoken
-    sendGameChat(message);
-  });
-
   socket.on('nick', function(nickname){
-    player.name = nickname;
+    if (typeof(nickname) === string && nickname.length < 100) {
+      player.name = nickname;
+      console.log(`${nickname} has joined Pixel Party!`);
+    }
   });
   
   socket.on('chat', function(messageBody){
-
     var message = {
       username: player.name,
       body: messageBody
