@@ -155,7 +155,7 @@ async function screenshotMap(resolution) {
   console.log("screenshot writing to screenshot.png");
 
   try {
-    await image.writeAsync('server/screenshot.png');
+    await image.writeAsync('screenshot.png');
     console.log("screenshot saved properly!");
   }
   catch (ex) {
