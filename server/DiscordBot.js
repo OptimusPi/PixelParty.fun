@@ -6,7 +6,24 @@ const Discord = require('discord.js');
 function DiscordBot(config, printMap, clearMap, screenshotMap){
   this.config = config;
   this.connected = false;
-  this.printMap = printMap;
+  this.screenshotMap = screenshotMap;
+
+  this.getAndSendScreenshot = async function(resolution) {
+    console.log("resolution: ", resolution);
+    let screenshotUrl = await this.screenshotMap(resolution);
+    console.log("screenshotUrl: ", screenshotUrl);
+
+    //message.reply(screenshot);
+    const embed = new Discord.MessageEmbed()
+      .setColor('#0099ff')
+      .setTitle('Pixel Party Screenshot')
+      .setImage(screenshotUrl)
+      .setTimestamp();
+
+      
+    console.log("message embed: ", embed);
+    this.client.channel.send({ embeds: [embed]});
+  };
 
   this.init = async function(){
     console.log("Initialiazing Discord Client...");
@@ -35,7 +52,7 @@ function DiscordBot(config, printMap, clearMap, screenshotMap){
       if (environment === "production") {
         this.channel.send(":art: Pixel Party time :eyes:");
       } else {
-        this.channel.send(`:art: Pixel Party time :eyes: environment: ${environment}`);
+        this.channel.send(`:art: Pixel Party time :eyes: environment: ${environment} :paintbrush: `);
       }
     });
     
@@ -66,25 +83,24 @@ function DiscordBot(config, printMap, clearMap, screenshotMap){
          // PNG-Screenshot sent to discord, and save to mongoDb
         else if(message.content.startsWith("!pixel screenshot")){
           let args = message.content.split(" ");
+          console.log("!pixel screenshot args: ", args)
 
           try {
             let resolution = parseInt(args[args.length - 1]);
             console.log("resolution: ", resolution);
-            let screenshot = screenshotMap(resolution);
-            //message.reply(screenshot);
-
-            message.reply("PixelParty.fun Screenshot", {
-              files: ['https://www.pixelparty.fun/screenshot.png']
-            });
+            this.getAndSendScreenshot(resolution);
+           
+            console.log("getAndSendScreenshot complete");
           } catch (ex) {
-            message.reply("usage \`!pixel screenshot 8\`");
+            message.reply("usage \`!pixel screenshot <resolution>\`");
+            console.log("exception: ", ex);
           }
           
         }
         // Clear canvas and start over
         else if(message.content === "!pixel wipe"){
           let screenshot = clearMap();
-          message.reply(screenshot);
+          message.reply("Map cleared!");
         }
     });
   }
