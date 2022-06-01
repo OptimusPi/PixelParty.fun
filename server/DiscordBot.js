@@ -9,9 +9,9 @@ function DiscordBot(config, printMap, clearMap, screenshotMap){
   this.clearMap = clearMap;
   this.screenshotMap = screenshotMap;
 
-  this.clearMap = async function() {
+  this.wipeMap = async function() {
     await this.clearMap();
-    this.client.channel.send('The canvas has been cleared! :eyes:');
+    this.client.channel.send(':white_large_square: The canvas has been cleared! :eyes:');
   };
 
   this.getAndSendScreenshot = async function(resolution) {
@@ -111,7 +111,8 @@ function DiscordBot(config, printMap, clearMap, screenshotMap){
         }
         // Clear canvas and start over
         else if(message.content === "!pixel wipe"){
-          let screenshot = clearMap();
+          console.log('running !pixel wipe...');
+          this.wipeMap();
           message.reply("Map cleared!");
         }
     });

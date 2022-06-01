@@ -84,8 +84,10 @@ console.log("Date timestamp on deploy: ", new Date());
 
 async function clearMap() {
 
+  console.log("wiping map with mapTiles.clear()...");
   // clear the map
   mapTiles.clear();
+  console.log("...done! map should be cleared now.");
 
   // save the cleared map in mongoDB
   await saveMap();
