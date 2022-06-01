@@ -82,13 +82,20 @@ ensureMap();
 
 console.log("Date timestamp on deploy: ", new Date());
 
-function clearMap() {
+async function clearMap() {
+
+  console.log("wiping map with mapTiles.clear()...");
+  // clear the map
+  mapTiles.clear();
+  console.log("...done! map should be cleared now.");
+
+  // save the cleared map in mongoDB
+  await saveMap();
+
+  // notify each client it has been cleared
   for (let x = 0; x < 16; x++) {
     for (let y = 0; y < 16; y++) {
       const color = 0;
-      // Tell every connection the map is clearing
-      // Get color of each map tile
-      mapTiles[x][y].color = color;
 
       for (let i = 0; i < connections.length; i++){
         if (connections[i].socket !== null) {
@@ -101,7 +108,7 @@ function clearMap() {
       }
     }
   }
-  saveMap();
+
 }
 
 async function screenshotMap(resolution) {
@@ -195,7 +202,7 @@ const discordConfig = {
 
 let discordBot = new DiscordBot(discordConfig, 
   () => { return printMap()}, 
-  () => {clearMap()}, 
+  clearMap, 
   screenshotMap
 );
 
@@ -275,7 +282,7 @@ async function actionPlayer(player, action)
       }
     }
 
-    saveMap();
+    await saveMap();
   }
 }
 
