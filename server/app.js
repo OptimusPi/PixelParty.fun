@@ -29,11 +29,6 @@ app.get('/', function(req, res){
   res.sendFile('index.html', { root: __dirname });
 });
 
-app.get('/screenshot.png', function(req, res) {
-  res.set('Cache-Control', 'no-store');
-  res.sendFile('screenshot.png', { root: __dirname });
-})
-
 app.get('/healthcheck', function (req, res) {
   res.status(200).send({ 
     healthcheck: {
@@ -160,7 +155,7 @@ async function screenshotMap(resolution) {
   console.log("screenshot writing to screenshot.png");
 
   try {
-    await image.writeAsync('server/screenshot.png');
+    await image.writeAsync(`server/${screenshotHash}.png`);
     console.log("screenshot saved properly!");
   }
   catch (ex) {
@@ -168,7 +163,7 @@ async function screenshotMap(resolution) {
   }
 
   return {
-    screenshotUrl: 'https://www.pixelparty.fun/screenshot.png',
+    screenshotUrl: `server/${screenshotHash}.png`,
     screenshotHash: screenshotHash
   };
 }
