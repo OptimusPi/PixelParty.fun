@@ -22,7 +22,7 @@ const DiscordBot = require('./DiscordBot.js');
 
 // The code in /public is independent from /server
 // Use Express to serve everything in the public folder as regular HTML/JavaScript
-app.use(express.static(path.join(__dirname, '../public'))) ;
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Serve index.html as plain HTML on GET /
 app.get('/', function(req, res){
@@ -47,7 +47,7 @@ const mapStateSchema = new mongoose.Schema({
   mapState: Object
 });
 
-const MapStateModel = mongoose.model('ColorMapState4', mapStateSchema);
+const MapStateModel = mongoose.model('color-freedraw', mapStateSchema);
 
 async function saveMap() {
   const dbMapState = await MapStateModel.findOneAndUpdate(
@@ -65,7 +65,7 @@ async function saveMap() {
 async function ensureMap() {
   console.log('Loading map from mongoDB...');
 
-  await mongoose.connect(process.env.MONGODB_URI);
+  mongoose.connect(process.env.MONGODB_URI);
 
   const dbMapState = await MapStateModel.findOne({name: "color-freedraw"});
   
@@ -269,8 +269,6 @@ async function actionPlayer(player, action)
     let y = player.y;
     mapTiles.flip(x, y);
     let color = mapTiles.get(x, y).color;
-
-    console.log(">>> place " + x + "," + y + "(" + color +")");
 
     for (let i = 0; i < connections.length; i++){
       if (connections[i].socket !== null) {
